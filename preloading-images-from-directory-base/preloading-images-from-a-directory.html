@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+   <title></title>
+   <style type="text/css">
+   </style>
+   <script type="text/javascript">
+      function preloadImagesFromDirectory(dir,callback) {
+
+            if(!dir) {return;}
+  
+            function RequestJSON(url,success) {
+
+                var uniqueID = 'jsoncallback'+((+new Date()));
+
+                window[uniqueID] = function(data) {
+                   success && success(data);
+                }
+
+                document.getElementsByTagName('head')[0].appendChild(
+                       (function(){
+                             var s = document.createElement('script');
+                                 s.type = "text/javascript";
+                                 s.src = url.replace('callback=?','callback='+uniqueID);
+                                 return s;  
+                       })()
+                );  
+            };
+
+            function preload(srcArray) {
+                  if(typeof callback === 'function') {
+                       callback(srcArray);  
+                  }
+            };
+
+            RequestJSON('scanImagesDirectory.php?directory='+dir+'&callback=?',function(data){
+                   
+                   return data.images ? preload(data.images) : false;
+            }); 
+      };
+
+     window.onload = function(){
+            preloadImagesFromDirectory('photos',function(photos){
+                   var n = photos.length;
+                   for(var i=0;i<n;i++) {
+                       var img = document.createElement('img');
+                           img.src = photos[i];
+                           img.alt = 'photo';
+                           document.getElementById('photos').appendChild(img);
+                   } 
+            });
+     }
+   </script>
+</head>
+<body>
+<h1>Preloading Images From A Directory</h1>
+<div id="photos"></div>
+<div id="ft" role="contentinfo"><p>Written By @<a href="http://twitter.com/thinkphp">thinkphp</a> | <a href="scanImagesDirectory.phps">php</a> | <a href="images/">directory</a></p></div>
+</body>
+</html>
+

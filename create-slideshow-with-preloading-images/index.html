@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+   <title></title>
+   <style type="text/css">
+   #photos{position: relative;width: 512px;height: 384px;}
+   img{position: absolute;left: 0;top: 0;width: 100%;filter: alpha(opacity=0);opacity: 0}
+   #ft{font-size:120%;text-align:left;margin:2em 0;}
+   #ft p a{color: #393}
+   #ft p {color: #111}
+   </style>
+   <script type="text/javascript" src="animate.js"></script>
+   <script type="text/javascript" src="preload.js"></script>
+   <script type="text/javascript">
+     window.onload = function(){
+            preloadImagesFromDirectory('images',function(photos){
+                   var n = photos.length, markers = [];
+                   for(var i=0;i<n;i++) {
+                       var img = document.createElement('img');
+                           img.src = photos[i];
+                           img.style.opacity = '0';
+                           img.style.top = '0px';
+                           img.style.left = '0px';
+                           img.style.position = 'absolute';
+                           img.style.zIndex = 10;
+                           markers.push(img);
+                           document.getElementById('photos').appendChild(img);
+                   } 
+                   var index = 0;
+
+                   markers[index].style.opacity = 1;
+                   markers[index].style.filter = 'alpha(opacity=100)';
+
+                   var slideshow = function() {
+                       new Animate(markers[index],'opacity',{
+                           from: 1,
+                           to: 0,
+                           time: 500,
+                           callback: function(){
+                                ++index; 
+                                index = markers[index] ? index : 0; 
+                                new Animate(markers[index],'opacity',{
+                                    from: 0,
+                                    to: 1,
+                                    time: 500}
+                                ).start();                                
+                           }
+                       }).start(); 
+                   };
+
+                   window.setInterval(slideshow,5000);
+            });
+     }
+   </script>
+</head>
+<body>
+<h1>Create a Quick SlideShow with Preloading Images From a Directory</h1>
+<div id="photos"></div>
+<div id="ft" role="contentinfo"><p>Written By @<a href="http://twitter.com/thinkphp">thinkphp</a> | <a href="animate.js">animate</a> | <a href="scanImagesDirectory.phps">scanImagesDirectory</a> | <a href="preload.js">preload</a> | <a href="images/">directory</a> </p></div>
+</body>
+</html>
+
